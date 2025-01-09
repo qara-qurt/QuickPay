@@ -52,5 +52,6 @@ public class UserEntity {
     @UpdateTimestamp
     @Column(nullable = false)
     LocalDateTime updatedAt;
+
 }
 

@@ -1,5 +1,6 @@
 package kz.iitu.quick_pay.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,7 +21,8 @@ public class UserDto {
     @Size(min = 3, message = "Username must be at least 6 characters")
     String username;
 
-    String isActive;
+    @JsonProperty("is_active")
+    boolean isActive;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email is invalid")

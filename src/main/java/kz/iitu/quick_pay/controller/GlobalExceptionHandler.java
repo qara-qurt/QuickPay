@@ -3,6 +3,7 @@ package kz.iitu.quick_pay.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kz.iitu.quick_pay.exception.UserAlreadyExistsException;
+import kz.iitu.quick_pay.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -47,6 +48,21 @@ public class GlobalExceptionHandler {
                 "timestamp", LocalDateTime.now(),
                 "status", HttpStatus.CONFLICT.value(),
                 "error", "Conflict",
+                "messages", List.of(ex.getMessage()),
+                "path", request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    // Handling UserNotFound errors
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
+
+        Map<String, Object> response = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.NOT_FOUND.value(),
+                "error", "Not Found",
                 "messages", List.of(ex.getMessage()),
                 "path", request.getRequestURI()
         );
