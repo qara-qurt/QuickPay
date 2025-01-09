@@ -5,6 +5,10 @@ import kz.iitu.quick_pay.enitity.UserEntity;
 import kz.iitu.quick_pay.exception.UserAlreadyExistsException;
 import kz.iitu.quick_pay.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +16,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Override
     public Long createUser(UserDto userDto) {
@@ -27,7 +33,6 @@ public class UserServiceImpl implements UserService{
             throw new UserAlreadyExistsException("User with this email already exists");
         }
 
-
         return userRepository.save(
                 UserEntity.builder()
                         .name(userDto.getName())
@@ -35,7 +40,7 @@ public class UserServiceImpl implements UserService{
                         .isActive(true)
                         .username(userDto.getUsername())
                         .email(userDto.getEmail())
-                        .password(userDto.getPassword())
+                        .password(passwordEncoder.encode(userDto.getPassword()))
                         .build()
         ).getId();
     }
