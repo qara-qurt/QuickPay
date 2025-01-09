@@ -3,8 +3,11 @@ package kz.iitu.quick_pay.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -13,6 +16,7 @@ import lombok.*;
 @Setter
 @Builder
 public class UserDto {
+    Long id;
     @NotBlank(message = "Name is required")
     String name;
     @NotBlank(message = "Surname is required")
@@ -30,4 +34,8 @@ public class UserDto {
 
     @Size(min = 6, message = "Password must be at least 6 characters")
     String password;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 }

@@ -1,6 +1,5 @@
 package kz.iitu.quick_pay.config;
 
-import kz.iitu.quick_pay.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

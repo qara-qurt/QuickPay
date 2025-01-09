@@ -21,8 +21,14 @@ public class OrganizationEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @Column(nullable = false, unique = true)
     String name;
+
+    @Column(nullable = false, unique = true)
     String bin;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    boolean isActive = true;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

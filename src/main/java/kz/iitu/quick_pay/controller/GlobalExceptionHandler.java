@@ -2,8 +2,10 @@ package kz.iitu.quick_pay.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import kz.iitu.quick_pay.exception.UserAlreadyExistsException;
-import kz.iitu.quick_pay.exception.UserNotFoundException;
+import kz.iitu.quick_pay.exception.organization.OrganizationAlreadyExistException;
+import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
+import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
+import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,7 +20,6 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     // Handling Valid errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -41,8 +42,8 @@ public class GlobalExceptionHandler {
     }
 
     // Handling UserAlreadyExistsException errors
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex, HttpServletRequest request) {
+    @ExceptionHandler({UserAlreadyExistsException.class, OrganizationAlreadyExistException.class})
+    public ResponseEntity<Object> handleUserAlreadyExistsException(RuntimeException ex, HttpServletRequest request) {
 
         Map<String, Object> response = Map.of(
                 "timestamp", LocalDateTime.now(),
@@ -56,8 +57,8 @@ public class GlobalExceptionHandler {
     }
 
     // Handling UserNotFound errors
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, HttpServletRequest request) {
+    @ExceptionHandler({UserNotFoundException.class, OrganizationNotFoundException.class})
+    public ResponseEntity<Object> handleUserNotFoundException(RuntimeException ex, HttpServletRequest request) {
 
         Map<String, Object> response = Map.of(
                 "timestamp", LocalDateTime.now(),

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrganizationRepository extends JpaRepository<OrganizationEntity, Long> {
+    boolean existsByName(String name);
+    boolean existsByBin(String bin);
 }

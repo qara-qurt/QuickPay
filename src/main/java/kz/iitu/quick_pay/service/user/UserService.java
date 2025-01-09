@@ -1,7 +1,6 @@
-package kz.iitu.quick_pay.service;
+package kz.iitu.quick_pay.service.user;
 
 import kz.iitu.quick_pay.dto.UserDto;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

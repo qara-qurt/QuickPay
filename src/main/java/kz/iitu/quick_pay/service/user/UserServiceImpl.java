@@ -1,10 +1,10 @@
-package kz.iitu.quick_pay.service;
+package kz.iitu.quick_pay.service.user;
 
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.UserDto;
 import kz.iitu.quick_pay.enitity.UserEntity;
-import kz.iitu.quick_pay.exception.UserAlreadyExistsException;
-import kz.iitu.quick_pay.exception.UserNotFoundException;
+import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
+import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import kz.iitu.quick_pay.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -54,11 +54,14 @@ public class UserServiceImpl implements UserService{
                         new UserNotFoundException(String.format("User with id %s not found", id))
                 );
         return UserDto.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .isActive(user.isActive())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
@@ -107,10 +110,13 @@ public class UserServiceImpl implements UserService{
             }
         });
         return UserDto.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
