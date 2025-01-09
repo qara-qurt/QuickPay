@@ -119,7 +119,7 @@ public class UserControllerTests {
     void testDeleteUser_Success() throws Exception {
         mockMvc.perform(delete("/api/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User deleted"));
+                .andExpect(jsonPath("$.message").value("User successfully deleted"));
     }
 
     @Test
