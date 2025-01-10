@@ -2,14 +2,19 @@ package kz.iitu.quick_pay.service.user;
 
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.UserDto;
+import kz.iitu.quick_pay.enitity.Role;
 import kz.iitu.quick_pay.enitity.UserEntity;
 import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import kz.iitu.quick_pay.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,9 +22,9 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-
+    @Transactional
     @Override
     public Long createUser(UserDto userDto) {
         // Checking if user with this username or email already exists
@@ -37,10 +42,11 @@ public class UserServiceImpl implements UserService {
                 UserEntity.builder()
                         .name(userDto.getName())
                         .surname(userDto.getSurname())
-                        .isActive(true)
+                        .isActive(true) // DEFAULT is_active is TRUE
                         .username(userDto.getUsername())
                         .email(userDto.getEmail())
                         .password(passwordEncoder.encode(userDto.getPassword()))
+                        .role(List.of(Role.USER)) // DEFAULT role is ROLE_USER
                         .build()
         ).getId();
     }
@@ -53,16 +59,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()->
                         new UserNotFoundException(String.format("User with id %s not found", id))
                 );
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .isActive(user.isActive())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
+        return UserDto.convertTo(user);
     }
 
     @Transactional
@@ -109,20 +106,27 @@ public class UserServiceImpl implements UserService {
                     break;
             }
         });
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .surname(user.getSurname())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
+        return UserDto.convertTo(user);
     }
 
     // Helper method to validate email
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
         return email != null && email.matches(emailRegex);
+    }
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity  userEntity = userRepository.findByUsername(username)
+                .orElseThrow(()->
+                        new UsernameNotFoundException("User with username " + username + " not found")
+                );
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .roles(userEntity.getRole().stream().map(Enum::name).toArray(String[]::new))
+                .build();
     }
 }

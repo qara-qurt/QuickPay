@@ -8,6 +8,7 @@ import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -69,6 +70,20 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    // Handling UNAUTHORIZED users exceptions
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex, HttpServletRequest request) {
+        Map<String, Object> response = Map.of(
+                "timestamp", LocalDateTime.now(),
+                "status", HttpStatus.UNAUTHORIZED.value(),
+                "error", "Unauthorized",
+                "messages", List.of("Incorrect username or password"),
+                "path", request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     // Handling other exceptions

@@ -58,7 +58,7 @@ public class UserControllerTests {
                 .password("password123")
                 .build());
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class UserControllerTests {
                 .password("password123")
                 .build());
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict())
@@ -170,7 +170,7 @@ public class UserControllerTests {
     void testCreateUser_ValidationError() throws Exception {
         String json = objectMapper.writeValueAsString(Map.of("name", ""));
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
