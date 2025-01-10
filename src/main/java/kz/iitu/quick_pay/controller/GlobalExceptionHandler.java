@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
                 "path", request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     // Handling other exceptions

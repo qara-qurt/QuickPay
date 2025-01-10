@@ -46,4 +46,5 @@ public class OrganizationController {
         organizationService.deleteOrganization(id);
         return ResponseEntity.ok(Map.of("message", "Organization deleted"));
     }
+
 }
