@@ -50,7 +50,7 @@ public class UserDto {
                 .surname(userEntity.getSurname())
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
+                .password(null)
                 .roles(userEntity.getRole())
                 .isActive(userEntity.isActive())
                 .createdAt(userEntity.getCreatedAt())
