@@ -4,6 +4,7 @@ package kz.iitu.quick_pay.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import kz.iitu.quick_pay.exception.organization.OrganizationAlreadyExistException;
 import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
+import kz.iitu.quick_pay.exception.product.ProductWithThisRfidAlreadyExist;
 import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     // Handling UserAlreadyExistsException errors
-    @ExceptionHandler({UserAlreadyExistsException.class, OrganizationAlreadyExistException.class})
+    @ExceptionHandler({UserAlreadyExistsException.class, OrganizationAlreadyExistException.class, ProductWithThisRfidAlreadyExist.class})
     public ResponseEntity<Object> handleUserAlreadyExistsException(RuntimeException ex, HttpServletRequest request) {
 
         Map<String, Object> response = Map.of(
