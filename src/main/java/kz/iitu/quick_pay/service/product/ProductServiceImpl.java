@@ -4,7 +4,7 @@ import kz.iitu.quick_pay.dto.ProductDto;
 import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import kz.iitu.quick_pay.enitity.ProductEntity;
 import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
-import kz.iitu.quick_pay.exception.product.ProductWithThisRfidAlreadyExist;
+import kz.iitu.quick_pay.exception.product.ProductAlreadyExist;
 import kz.iitu.quick_pay.repository.OrganizationRepository;
 import kz.iitu.quick_pay.repository.ProductRepository;
 import lombok.AccessLevel;
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     public Long createProduct(ProductDto productDto) {
         productRepository.findByRfidToken(productDto.getRfidToken())
                 .ifPresent(product -> {
-                    throw new ProductWithThisRfidAlreadyExist("Product with rfid_token " + productDto.getRfidToken() + " already exist");
+                    throw new ProductAlreadyExist("Product with rfid_token " + productDto.getRfidToken() + " already exist");
                 });
 
         OrganizationEntity organization = organizationRepository.findById(productDto.getOrganizationId())

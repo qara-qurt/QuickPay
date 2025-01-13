@@ -106,7 +106,9 @@ public class UserServiceImpl implements UserService {
                     break;
             }
         });
-        return UserDto.convertTo(user);
+
+        UserEntity userEntity = userRepository.save(user);
+        return UserDto.convertTo(userEntity);
     }
 
     // Helper method to validate email
