@@ -29,12 +29,16 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping(PRODUCT_BY_ORGANIZATION_ID)
-    public List<ProductDto> getProducts(@PathVariable Long id) {
-        return productService.getProductsByOrganizationId(id);
+    public List<ProductDto> getProductsByOrganizationId(
+            @PathVariable Long id,
+            @RequestParam(value = "page",defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "10")  int limit) {
+        return productService.getProductsByOrganizationId(id,page,limit);
     }
 
     @PostMapping()
     public ResponseEntity<Map<String,Long>> createProduct(@Valid @RequestBody ProductDto productDto) {
         return ResponseEntity.ok(Map.of("id", productService.createProduct(productDto)));
     }
+
 }

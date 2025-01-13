@@ -7,6 +7,6 @@ import java.util.List;
 
 @Service
 public interface ProductService {
-    List<ProductDto> getProductsByOrganizationId(Long organizationId);
+    List<ProductDto> getProductsByOrganizationId(Long organizationId, int page, int size);
     Long createProduct(ProductDto productDto);
 }
