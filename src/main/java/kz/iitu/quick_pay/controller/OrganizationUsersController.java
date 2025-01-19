@@ -1,20 +1,12 @@
 package kz.iitu.quick_pay.controller;
 
 import kz.iitu.quick_pay.dto.OrganizationUsersDto;
-import kz.iitu.quick_pay.dto.UserDto;
-import kz.iitu.quick_pay.enitity.OrganizationUsersEntity;
 import kz.iitu.quick_pay.service.organization_users.OrganizationUsersService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
