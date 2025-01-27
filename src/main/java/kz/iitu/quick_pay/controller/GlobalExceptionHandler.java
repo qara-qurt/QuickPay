@@ -2,6 +2,8 @@ package kz.iitu.quick_pay.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import kz.iitu.quick_pay.exception.cashbox.CashBoxAlreadyExistException;
+import kz.iitu.quick_pay.exception.cashbox.CashBoxNotFoundException;
 import kz.iitu.quick_pay.exception.inventory.InventoryNotFoundException;
 import kz.iitu.quick_pay.exception.organization.OrganizationAlreadyExistException;
 import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
@@ -45,7 +47,7 @@ public class GlobalExceptionHandler {
     }
 
     // Handling UserAlreadyExistsException errors
-    @ExceptionHandler({UserAlreadyExistsException.class, OrganizationAlreadyExistException.class, ProductAlreadyExist.class})
+    @ExceptionHandler({UserAlreadyExistsException.class, OrganizationAlreadyExistException.class, ProductAlreadyExist.class, CashBoxAlreadyExistException.class})
     public ResponseEntity<Object> handleUserAlreadyExistsException(RuntimeException ex, HttpServletRequest request) {
 
         Map<String, Object> response = Map.of(
@@ -60,7 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     // Handling UserNotFound errors
-    @ExceptionHandler({UserNotFoundException.class, OrganizationNotFoundException.class, InventoryNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, OrganizationNotFoundException.class, InventoryNotFoundException.class, CashBoxNotFoundException.class})
     public ResponseEntity<Object> handleUserNotFoundException(RuntimeException ex, HttpServletRequest request) {
 
         Map<String, Object> response = Map.of(
