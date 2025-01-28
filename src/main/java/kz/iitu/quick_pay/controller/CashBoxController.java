@@ -3,12 +3,13 @@ package kz.iitu.quick_pay.controller;
 
 import jakarta.validation.Valid;
 import kz.iitu.quick_pay.dto.CashBoxDto;
-import kz.iitu.quick_pay.dto.InventoryDto;
 import kz.iitu.quick_pay.service.cashbox.CashBoxService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,5 +48,12 @@ public class CashBoxController {
     @GetMapping()
     public CashBoxDto getCashBoxByCashBoxId(@RequestParam String cashbox_id ){
         return cashBoxService.getCashBoxByCashBoxId(cashbox_id);
+    }
+
+    // WebSocket
+    @MessageMapping("/test")
+    @SendTo("/topic/cash-boxes")
+    public String processMessage(String message){
+        return "Hello";
     }
 }

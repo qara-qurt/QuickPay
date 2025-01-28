@@ -3,7 +3,6 @@ package kz.iitu.quick_pay.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import kz.iitu.quick_pay.enitity.CashBoxEntity;
-import kz.iitu.quick_pay.enitity.InventoryEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;

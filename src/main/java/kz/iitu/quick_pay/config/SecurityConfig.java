@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST,"/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -62,8 +63,10 @@ public class SecurityConfig {
         configuration.addAllowedHeader("Authorization");
         configuration.getMaxAge();
         configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // allow all paths
+        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/ws/**", configuration);
         return source;
     }
 
