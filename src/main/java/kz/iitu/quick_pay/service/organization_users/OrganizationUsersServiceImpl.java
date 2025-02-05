@@ -21,7 +21,11 @@ public class OrganizationUsersServiceImpl implements OrganizationUsersService {
 
     @Override
     public OrganizationUsersDto getAllUsersByOrganizationId(Long organizationId) {
-        List<OrganizationUsersEntity> organizationUsersEntities = organizationUsersRepository.findByOrganization_Id(organizationId);
+        List<OrganizationUsersEntity> organizationUsersEntities = organizationUsersRepository.findByOrganizationId(organizationId);
+
+        if(organizationUsersEntities.isEmpty()) {
+            return null;
+        }
 
         OrganizationDto organization = OrganizationDto
                 .builder()

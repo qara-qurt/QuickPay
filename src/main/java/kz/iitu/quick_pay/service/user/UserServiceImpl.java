@@ -2,14 +2,19 @@ package kz.iitu.quick_pay.service.user;
 
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.UserDto;
+import kz.iitu.quick_pay.dto.UserLoginDto;
 import kz.iitu.quick_pay.enitity.Role;
 import kz.iitu.quick_pay.enitity.UserEntity;
 import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import kz.iitu.quick_pay.repository.UserRepository;
+import kz.iitu.quick_pay.utils.JwtTokenUtils;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,10 +24,11 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -60,6 +66,17 @@ public class UserServiceImpl implements UserService {
                         new UserNotFoundException(String.format("User with id %s not found", id))
                 );
         return UserDto.convertTo(user);
+    }
+
+    @Override
+    public UserDto getByUsername(String username) {
+       UserEntity userEntity = userRepository.findByUsername(username)
+               .orElseThrow(()->
+                       new UserNotFoundException(String.format("User with username %s not found", username))
+               );
+
+       return UserDto.convertTo(userEntity);
+
     }
 
     @Transactional

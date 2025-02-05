@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrganizationUsersRepository extends JpaRepository<OrganizationUsersEntity, Long> {
-    List<OrganizationUsersEntity> findByOrganization_Id(Long organizationId);
+    List<OrganizationUsersEntity> findByOrganizationId(Long organizationId);
 }
 

@@ -11,8 +11,8 @@ import lombok.AccessLevel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +32,7 @@ public class UserController {
     public static final String REGISTER = "/register";
     public static final String LOGIN = "/login";
     public static final String USER_BY_ID = "/{id}";
+    public static final String ME = "/me";
 
     UserService userService;
     JwtTokenUtils jwtTokenUtils;
@@ -44,14 +45,20 @@ public class UserController {
     }
 
     @PostMapping(LOGIN)
-    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody UserLoginDto userLoginDto) {
         // Аутентификация пользователя
         authenticateUser(userLoginDto);
         UserDetails user = userService.loadUserByUsername(userLoginDto.getUsername());
-
         // Генерация токена
         String token = jwtTokenUtils.generateToken(user);
-        return ResponseEntity.ok(Map.of("token", token));
+
+       UserDto userDto = userService.getByUsername(userLoginDto.getUsername());
+
+        return ResponseEntity.ok(Map.of(
+                "user", userDto,
+                "token", token
+
+        ));
     }
 
     @GetMapping(USER_BY_ID)
@@ -70,6 +77,13 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         UserDto user = userService.updateUser(id, updates);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(ME)
+    public ResponseEntity<UserDto>  me() {
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDto userDto = userService.getByUsername(user.getUsername());
+        return ResponseEntity.ok( userDto);
     }
 
     // Для тестирования админских ресурсов
