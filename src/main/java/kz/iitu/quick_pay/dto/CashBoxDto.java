@@ -26,9 +26,10 @@ public class CashBoxDto {
     @JsonProperty("organization_id")
     Long organizationId;
 
-    LocalDateTime createdAt;
-
-    LocalDateTime updatedAt;
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 
     public static CashBoxDto convertTo(CashBoxEntity entity) {
         return CashBoxDto.builder()

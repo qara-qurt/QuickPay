@@ -31,10 +31,10 @@ public class CashBoxEntity {
     OrganizationEntity organization;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at",nullable = false, updatable = false)
     LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(name = "updated_at",nullable = false)
     LocalDateTime updatedAt;
 }

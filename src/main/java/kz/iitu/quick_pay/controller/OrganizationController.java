@@ -1,14 +1,17 @@
 package kz.iitu.quick_pay.controller;
 
 import jakarta.validation.Valid;
+import kz.iitu.quick_pay.dto.InventoryGetDto;
 import kz.iitu.quick_pay.dto.OrganizationDto;
 import kz.iitu.quick_pay.service.organization.OrganizationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +32,20 @@ public class OrganizationController {
     public ResponseEntity<Map<String,Long>> createOrganization(@Valid @RequestBody OrganizationDto organizationDto) {
         Long organizationId = organizationService.createOrganization(organizationDto);
         return ResponseEntity.ok(Map.of("id", organizationId));
+    }
+
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getOrganizations(
+            @RequestParam(value = "page",defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "10")  int limit,
+            @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "bin", required = false) String bin,
+            @RequestParam(value = "isActive", required = false) Boolean isActive){
+
+        Page<OrganizationDto> data = organizationService.getAllOrganizations(page, limit, sort, order, name, bin, isActive);
+        return ResponseEntity.ok(Map.of("data", data));
     }
 
     @GetMapping(ORGANIZATION_BY_ID)

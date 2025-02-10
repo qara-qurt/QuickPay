@@ -2,12 +2,16 @@ package kz.iitu.quick_pay.service.organization;
 
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.OrganizationDto;
-import kz.iitu.quick_pay.dto.UserDto;
 import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import kz.iitu.quick_pay.exception.organization.OrganizationAlreadyExistException;
 import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
 import kz.iitu.quick_pay.repository.OrganizationRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -58,6 +62,28 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .build();
     }
 
+    @Override
+    public Page<OrganizationDto> getAllOrganizations(int page, int limit, String sort, String order, String name, String bin, Boolean isActive) {
+        Specification<OrganizationEntity> spec = Specification
+                .where(OrganizationSpecification.hasName(name))
+                .and(OrganizationSpecification.hasBin(bin))
+                .and(OrganizationSpecification.isActive(isActive));
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
+
+        return organizationRepository.findAll(spec, pageable).map(organization -> OrganizationDto.builder()
+                .id(organization.getId())
+                .name(organization.getName())
+                .bin(organization.getBin())
+                .isActive(organization.isActive())
+                .createdAt(organization.getCreatedAt())
+                .updatedAt(organization.getUpdatedAt())
+                .build());
+
+    }
+
+
     @Transactional
     @Override
     public void deleteOrganization(Long id) {
@@ -86,6 +112,9 @@ public class OrganizationServiceImpl implements OrganizationService {
                     break;
                 case "bin":
                     organization.setBin((String) value);
+                    break;
+                case "is_active":
+                    organization.setActive(Boolean.parseBoolean(value));
                     break;
             }
         });

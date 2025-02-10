@@ -40,7 +40,9 @@ public class UserDto {
 
     List<Role> roles;
 
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
     public static UserDto convertTo(UserEntity userEntity){

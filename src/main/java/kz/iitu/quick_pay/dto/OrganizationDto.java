@@ -25,6 +25,8 @@ public class OrganizationDto {
     @JsonProperty("is_active")
     boolean isActive;
 
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 }

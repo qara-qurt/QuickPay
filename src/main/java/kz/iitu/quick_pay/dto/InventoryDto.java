@@ -27,9 +27,10 @@ public class InventoryDto {
     @JsonProperty("total_count")
     int totalCount;
 
-    LocalDateTime createdAt;
-
-    LocalDateTime updatedAt;
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 
     public static InventoryDto convertTo(InventoryEntity entity) {
         return InventoryDto.builder()
