@@ -3,10 +3,12 @@ package kz.iitu.quick_pay.controller;
 
 import jakarta.validation.Valid;
 import kz.iitu.quick_pay.dto.CashBoxDto;
+import kz.iitu.quick_pay.dto.OrganizationDto;
 import kz.iitu.quick_pay.service.cashbox.CashBoxService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -22,7 +24,7 @@ import java.util.Map;
 public class CashBoxController {
 
     // Base URL
-    public static final String BASE_URL = "api/cash-box";
+    public static final String BASE_URL = "api/cash-boxes";
 
     // Endpoints
     public static final String CASH_BOXES_BY_ORGANIZATION_ID= "/organization/{id}";
@@ -45,9 +47,34 @@ public class CashBoxController {
         return cashBoxService.getCashBoxById(id);
     }
 
+    @PatchMapping(CASH_BOX_BY_ID)
+    public ResponseEntity<CashBoxDto> getOrganization(@PathVariable Long id, @RequestBody Map<String,String> updates) {
+        CashBoxDto cashBox = cashBoxService.updateCashBox(id,updates);
+        return ResponseEntity.ok(cashBox);
+    }
+
+    @DeleteMapping(CASH_BOX_BY_ID)
+    public ResponseEntity<String> deleteCashBox(@PathVariable Long id){
+        cashBoxService.deleteCashBox(id);
+        return ResponseEntity.ok("CashBox with id " + id + " deleted");
+    }
+
+//    @GetMapping()
+//    public CashBoxDto getCashBoxByCashBoxId(@RequestParam String cashbox_id ){
+//        return cashBoxService.getCashBoxByCashBoxId(cashbox_id);
+//    }
+
     @GetMapping()
-    public CashBoxDto getCashBoxByCashBoxId(@RequestParam String cashbox_id ){
-        return cashBoxService.getCashBoxByCashBoxId(cashbox_id);
+    public ResponseEntity<Map<String, Object>> getOrganizations(
+            @RequestParam(value = "page",defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "10")  int limit,
+            @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "isActive", required = false) Boolean isActive){
+
+        Page<CashBoxDto> data = cashBoxService.getCashBoxes(page, limit, sort, order, name, isActive);
+        return ResponseEntity.ok(Map.of("data", data));
     }
 
     // WebSocket

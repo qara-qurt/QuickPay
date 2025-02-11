@@ -1,6 +1,7 @@
 package kz.iitu.quick_pay.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import kz.iitu.quick_pay.enitity.CashBoxEntity;
 import lombok.*;
@@ -26,6 +27,9 @@ public class CashBoxDto {
     @JsonProperty("organization_id")
     Long organizationId;
 
+    @JsonProperty("is_active")
+    boolean isActive = true;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
     @JsonProperty("updated_at")
@@ -35,6 +39,7 @@ public class CashBoxDto {
         return CashBoxDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
+                .isActive(entity.isActive())
                 .cashboxId(entity.getCashBoxId())
                 .organizationId(entity.getId())
                 .createdAt(entity.getCreatedAt())

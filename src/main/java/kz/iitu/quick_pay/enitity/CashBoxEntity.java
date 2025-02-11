@@ -30,6 +30,9 @@ public class CashBoxEntity {
     @JoinColumn(name = "organization_id", nullable = false)
     OrganizationEntity organization;
 
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    boolean isActive = true;
+
     @CreationTimestamp
     @Column(name = "created_at",nullable = false, updatable = false)
     LocalDateTime createdAt;
