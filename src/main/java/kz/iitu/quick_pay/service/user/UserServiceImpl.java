@@ -1,26 +1,32 @@
 package kz.iitu.quick_pay.service.user;
 
 import jakarta.transaction.Transactional;
+import kz.iitu.quick_pay.dto.OrganizationDto;
 import kz.iitu.quick_pay.dto.UserDto;
-import kz.iitu.quick_pay.dto.UserLoginDto;
+import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import kz.iitu.quick_pay.enitity.Role;
 import kz.iitu.quick_pay.enitity.UserEntity;
 import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
 import kz.iitu.quick_pay.repository.UserRepository;
-import kz.iitu.quick_pay.utils.JwtTokenUtils;
+import kz.iitu.quick_pay.service.organization.OrganizationSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +61,23 @@ public class UserServiceImpl implements UserService {
                         .role(List.of(Role.USER)) // DEFAULT role is ROLE_USER
                         .build()
         ).getId();
+    }
+
+    @Transactional
+    @Override
+    public Page<UserDto> getUsers(
+            int page,
+            int limit,
+            String sort,
+            String order,
+            String search
+    ) {
+        Specification<UserEntity> spec = Specification.where(UserSpecification.hasSearch(search));
+
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
+
+        return userRepository.findAll(spec, pageable).map(UserDto::convertTo);
     }
 
     @Transactional
@@ -118,11 +141,26 @@ public class UserServiceImpl implements UserService {
                     }
                     user.setEmail((String) value);
                     break;
-                case "password":
-                    user.setPassword(passwordEncoder.encode((String) value));
+                case "is_active":
+                   user.setActive((Boolean) value);
+                    break;
+                case "roles":
+                    if (value instanceof List<?> rolesList) {
+                        try {
+                            List<Role> updatedRoles = rolesList.stream()
+                                    .map(roleStr -> Role.valueOf(roleStr.toString()))
+                                    .collect(Collectors.toCollection(ArrayList::new));
+                            user.setRole(updatedRoles);
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException("Invalid role: " + value, e);
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Roles should be a list of strings");
+                    }
                     break;
             }
         });
+
 
         UserEntity userEntity = userRepository.save(user);
         return UserDto.convertTo(userEntity);

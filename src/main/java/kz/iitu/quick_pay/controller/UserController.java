@@ -8,6 +8,7 @@ import kz.iitu.quick_pay.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -84,6 +85,18 @@ public class UserController {
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDto userDto = userService.getByUsername(user.getUsername());
         return ResponseEntity.ok( userDto);
+    }
+
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getUsers(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit,
+            @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
+            @RequestParam(value = "order", defaultValue = "desc") String order,
+            @RequestParam(value = "search", required = false) String search) {
+
+        Page<UserDto> data = userService.getUsers(page, limit, sort, order, search);
+        return ResponseEntity.ok(Map.of("data", data));
     }
 
     // Для тестирования админских ресурсов

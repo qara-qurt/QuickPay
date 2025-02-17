@@ -8,6 +8,7 @@ import kz.iitu.quick_pay.enitity.ProductEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,10 +22,6 @@ public class ProductDto {
     @JsonProperty("organization_id")
     Long organizationId;
 
-    @NotBlank(message = "rfid_token is required")
-    @JsonProperty("rfid_token")
-    String rfidToken;
-
     @NotBlank(message = "name is required")
     @Size(min = 3, message = "Name must be at least 3 characters")
     String name;
@@ -32,11 +29,13 @@ public class ProductDto {
     @NotNull(message = "price is required")
     int price;
 
-    String size;
+    List<String> sizes;
 
-    String color;
+    List<String> colors;
 
     String image;
+
+    String description;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
@@ -47,12 +46,12 @@ public class ProductDto {
         return ProductDto.builder()
                 .id(entity.getId())
                 .organizationId(entity.getId())
-                .rfidToken(entity.getRfidToken())
                 .name(entity.getName())
                 .price(entity.getPrice())
-                .size(entity.getSize())
-                .color(entity.getColor())
+                .sizes(entity.getSizes())
+                .colors(entity.getColors())
                 .image(entity.getImage())
+                .description(entity.getDescription())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

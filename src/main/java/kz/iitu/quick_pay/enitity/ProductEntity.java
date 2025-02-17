@@ -1,12 +1,16 @@
 package kz.iitu.quick_pay.enitity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import kz.iitu.quick_pay.utils.StringListConverter;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,12 +25,9 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "organization_id", nullable = false)
     OrganizationEntity organization;
-
-    @Column(nullable = false, unique = true)
-    String rfidToken;
 
     @Column(nullable = false)
     String name;
@@ -34,17 +35,28 @@ public class ProductEntity {
     @Column(nullable = false)
     int price;
 
-    String size;
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
+    List<String> sizes;
 
-    String color;
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
+    List<String> colors;
 
     String image;
 
+    @JsonProperty("description")
+    String description;
+
     @CreationTimestamp
-    @Column(name = "created_at",nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at",nullable = false)
+    @Column(name = "updated_at", nullable = false)
     LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProductRFIDEntity> rfidTags = new ArrayList<>();
 }
+

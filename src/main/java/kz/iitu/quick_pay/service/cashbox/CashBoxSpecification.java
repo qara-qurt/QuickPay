@@ -1,6 +1,5 @@
 package kz.iitu.quick_pay.service.cashbox;
 import kz.iitu.quick_pay.enitity.CashBoxEntity;
-import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class CashBoxSpecification {
