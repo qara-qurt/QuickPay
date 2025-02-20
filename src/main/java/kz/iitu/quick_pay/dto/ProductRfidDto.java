@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RFIDDto {
-    @JsonProperty("rfid_tag")
-    String rfidTag;
+public class ProductRfidDto {
+    @JsonProperty("rfid_tags")
+    List<String> rfidTags;
 
-    @JsonProperty("device_id")
-    String device_id;
+    @JsonProperty("product_id")
+    Long productId;
 }

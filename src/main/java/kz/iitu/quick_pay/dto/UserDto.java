@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import kz.iitu.quick_pay.enitity.Role;
 import kz.iitu.quick_pay.enitity.UserEntity;
 import lombok.*;
@@ -40,12 +41,16 @@ public class UserDto {
 
     List<Role> roles;
 
+    @NotNull(message = "Organization ID is required")
+    @JsonProperty("organization_id")
+    private Long organizationId;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
-    public static UserDto convertTo(UserEntity userEntity){
+    public static UserDto convertTo(UserEntity userEntity, OrganizationEntity organization) {
         return UserDto.builder()
                 .id(userEntity.getId())
                 .name(userEntity.getName())
@@ -57,7 +62,7 @@ public class UserDto {
                 .isActive(userEntity.isActive())
                 .createdAt(userEntity.getCreatedAt())
                 .updatedAt(userEntity.getUpdatedAt())
+                .organizationId(organization != null ? organization.getId() : null)
                 .build();
     }
-
 }

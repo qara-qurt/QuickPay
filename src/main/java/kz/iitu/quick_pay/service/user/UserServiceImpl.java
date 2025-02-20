@@ -1,15 +1,17 @@
 package kz.iitu.quick_pay.service.user;
 
 import jakarta.transaction.Transactional;
-import kz.iitu.quick_pay.dto.OrganizationDto;
 import kz.iitu.quick_pay.dto.UserDto;
 import kz.iitu.quick_pay.enitity.OrganizationEntity;
+import kz.iitu.quick_pay.enitity.OrganizationUsersEntity;
 import kz.iitu.quick_pay.enitity.Role;
 import kz.iitu.quick_pay.enitity.UserEntity;
+import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
 import kz.iitu.quick_pay.exception.user.UserAlreadyExistsException;
 import kz.iitu.quick_pay.exception.user.UserNotFoundException;
+import kz.iitu.quick_pay.repository.OrganizationRepository;
+import kz.iitu.quick_pay.repository.OrganizationUsersRepository;
 import kz.iitu.quick_pay.repository.UserRepository;
-import kz.iitu.quick_pay.service.organization.OrganizationSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +36,8 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
+    OrganizationUsersRepository organizationUsersRepository;
+    OrganizationRepository organizationRepository;
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
 
@@ -50,7 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException("User with this email already exists");
         }
 
-        return userRepository.save(
+        UserEntity user = userRepository.save(
                 UserEntity.builder()
                         .name(userDto.getName())
                         .surname(userDto.getSurname())
@@ -60,7 +65,21 @@ public class UserServiceImpl implements UserService {
                         .password(passwordEncoder.encode(userDto.getPassword()))
                         .role(List.of(Role.USER)) // DEFAULT role is ROLE_USER
                         .build()
-        ).getId();
+        );
+
+        Optional<OrganizationEntity> organization = organizationRepository.findById(userDto.getOrganizationId());
+        if (organization.isEmpty()) {
+            throw new OrganizationNotFoundException("Organization not found with id " + userDto.getOrganizationId());
+        }
+
+        organizationUsersRepository.save(
+                OrganizationUsersEntity.builder()
+                        .user(user)
+                        .organization(organization.get())
+                        .build()
+        );
+
+        return user.getId();
     }
 
     @Transactional
@@ -77,18 +96,33 @@ public class UserServiceImpl implements UserService {
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
 
-        return userRepository.findAll(spec, pageable).map(UserDto::convertTo);
+        return userRepository.findAll(spec, pageable).map(userEntity -> {
+            Optional<OrganizationUsersEntity> organizationUser = organizationUsersRepository.findByUserId(userEntity.getId());
+            if (organizationUser.isEmpty()) {
+                throw new OrganizationNotFoundException("Organization not found for user with id " + userEntity.getId());
+            }
+
+            return UserDto.convertTo(userEntity, organizationUser.get().getOrganization());
+        });
     }
+
 
     @Transactional
     @Override
     public UserDto getUserById(Long id) {
+
         UserEntity user = userRepository
                 .findById(id)
                 .orElseThrow(()->
                         new UserNotFoundException(String.format("User with id %s not found", id))
                 );
-        return UserDto.convertTo(user);
+
+        Optional<OrganizationUsersEntity> organizationUser = organizationUsersRepository.findByUserId(user.getId());
+        if (organizationUser.isEmpty()) {
+            throw new OrganizationNotFoundException("Organization not found for user with id " + user.getId());
+        }
+
+        return UserDto.convertTo(user, organizationUser.get().getOrganization());
     }
 
     @Override
@@ -98,7 +132,12 @@ public class UserServiceImpl implements UserService {
                        new UserNotFoundException(String.format("User with username %s not found", username))
                );
 
-       return UserDto.convertTo(userEntity);
+       Optional<OrganizationUsersEntity> organizationUser = organizationUsersRepository.findByUserId(userEntity.getId());
+         if (organizationUser.isEmpty()) {
+              throw new OrganizationNotFoundException("Organization not found for user with id " + userEntity.getId());
+         }
+
+       return UserDto.convertTo(userEntity,organizationUser.get().getOrganization());
 
     }
 
@@ -163,7 +202,12 @@ public class UserServiceImpl implements UserService {
 
 
         UserEntity userEntity = userRepository.save(user);
-        return UserDto.convertTo(userEntity);
+        Optional<OrganizationUsersEntity> organizationUser = organizationUsersRepository.findByUserId(userEntity.getId());
+        if (organizationUser.isEmpty()) {
+            throw new OrganizationNotFoundException("Organization not found for user with id " + userEntity.getId());
+        }
+
+        return UserDto.convertTo(userEntity,organizationUser.get().getOrganization());
     }
 
     // Helper method to validate email
