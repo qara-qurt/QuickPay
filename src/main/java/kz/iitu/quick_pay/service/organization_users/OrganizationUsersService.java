@@ -8,5 +8,5 @@ import java.util.List;
 
 @Service
 public interface OrganizationUsersService {
-//    OrganizationUsersDto getAllUsersByOrganizationId(Long organizationId);
+    OrganizationUsersDto getAllUsersByOrganizationId(Long organizationId);
 }

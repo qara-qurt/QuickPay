@@ -25,10 +25,10 @@ public class OrganizationUsersController {
 
     OrganizationUsersService organizationUsersService;
 
-//    @GetMapping(ORGANIZATION_USERS_BY_ID)
-//    public OrganizationUsersDto getAllUsersByOrganizationId(@PathVariable Long id) {
-//        return organizationUsersService.getAllUsersByOrganizationId(id);
-//    }
+    @GetMapping(ORGANIZATION_USERS_BY_ID)
+    public OrganizationUsersDto getAllUsersByOrganizationId(@PathVariable Long id) {
+        return organizationUsersService.getAllUsersByOrganizationId(id);
+    }
 
 //    @PostMapping()
 //    public ResponseEntity<Map<String,String>> createOrganizationUsers(@RequestBody OrganizationUsersDto organizationUsersDto) {

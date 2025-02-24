@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductRfidRepository extends JpaRepository<ProductRFIDEntity, Long> {
     boolean existsByRfidToken(String rfidToken);
     List<ProductRFIDEntity> findByProductId(Long productId);
+    ProductRFIDEntity findByRfidToken(String rfidToken);
 }

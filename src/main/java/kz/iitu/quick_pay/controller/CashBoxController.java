@@ -71,16 +71,11 @@ public class CashBoxController {
             @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
             @RequestParam(value = "order", defaultValue = "desc") String order,
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "isActive", required = false) Boolean isActive){
+            @RequestParam(value = "is_active", required = false) Boolean is_active,
+            @RequestParam(value = "organization_id", required = false) Long organization_id){
 
-        Page<CashBoxDto> data = cashBoxService.getCashBoxes(page, limit, sort, order, name, isActive);
+        Page<CashBoxDto> data = cashBoxService.getCashBoxes(page, limit, sort, order, name, is_active,organization_id);
         return ResponseEntity.ok(Map.of("data", data));
     }
 
-    // WebSocket
-    @MessageMapping("/test")
-    @SendTo("/topic/cash-boxes")
-    public String processMessage(String message){
-        return "Hello";
-    }
 }

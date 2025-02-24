@@ -19,33 +19,33 @@ public class OrganizationUsersServiceImpl implements OrganizationUsersService {
 
     OrganizationUsersRepository organizationUsersRepository;
 
-//    @Override
-//    public OrganizationUsersDto getAllUsersByOrganizationId(Long organizationId) {
-//        List<OrganizationUsersEntity> organizationUsersEntities = organizationUsersRepository.findByOrganizationId(organizationId);
-//
-//        if(organizationUsersEntities.isEmpty()) {
-//            return null;
-//        }
-//
-//        OrganizationDto organization = OrganizationDto
-//                .builder()
-//                .id(organizationUsersEntities.getFirst().getOrganization().getId())
-//                .name(organizationUsersEntities.getFirst().getOrganization().getName())
-//                .bin(organizationUsersEntities.getFirst().getOrganization().getBin())
-//                .isActive(organizationUsersEntities.getFirst().getOrganization().isActive())
-//                .createdAt(organizationUsersEntities.getFirst().getOrganization().getCreatedAt())
-//                .updatedAt(organizationUsersEntities.getFirst().getOrganization().getUpdatedAt())
-//                .build();
-//
-//        List<UserDto> users = organizationUsersEntities
-//                .stream()
-//                .map(user -> UserDto.convertTo(user.getUser(),organizationUsersEntities.))
-//                .toList();
-//
-//        return OrganizationUsersDto
-//                .builder()
-//                .organization(organization)
-//                .users(users)
-//                .build();
-//    }
+    @Override
+    public OrganizationUsersDto getAllUsersByOrganizationId(Long organizationId) {
+        List<OrganizationUsersEntity> organizationUsersEntities = organizationUsersRepository.findByOrganizationId(organizationId);
+
+        if(organizationUsersEntities.isEmpty()) {
+            return null;
+        }
+
+        OrganizationDto organization = OrganizationDto
+                .builder()
+                .id(organizationUsersEntities.getFirst().getOrganization().getId())
+                .name(organizationUsersEntities.getFirst().getOrganization().getName())
+                .bin(organizationUsersEntities.getFirst().getOrganization().getBin())
+                .isActive(organizationUsersEntities.getFirst().getOrganization().isActive())
+                .createdAt(organizationUsersEntities.getFirst().getOrganization().getCreatedAt())
+                .updatedAt(organizationUsersEntities.getFirst().getOrganization().getUpdatedAt())
+                .build();
+
+        List<UserDto> users = organizationUsersEntities
+                .stream()
+                .map(user -> UserDto.convertTo(user.getUser(),user.getOrganization()))
+                .toList();
+
+        return OrganizationUsersDto
+                .builder()
+                .organization(organization)
+                .users(users)
+                .build();
+    }
 }

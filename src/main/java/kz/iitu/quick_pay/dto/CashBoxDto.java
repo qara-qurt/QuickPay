@@ -41,7 +41,7 @@ public class CashBoxDto {
                 .name(entity.getName())
                 .isActive(entity.isActive())
                 .cashboxId(entity.getCashBoxId())
-                .organizationId(entity.getId())
+                .organizationId(entity.getOrganization().getId())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

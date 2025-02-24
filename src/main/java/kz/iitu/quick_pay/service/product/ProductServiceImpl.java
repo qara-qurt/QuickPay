@@ -37,15 +37,6 @@ public class ProductServiceImpl implements ProductService {
     OrganizationRepository organizationRepository;
 
 
-    @Override
-    public List<ProductDto> getProductsByOrganizationId(Long organizationId, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        return productRepository.findByOrganizationId(organizationId,pageable)
-                .stream()
-                .map(ProductDto::convertTo)
-                .toList();
-    }
-
     @Transactional
     @Override
     public Page<ProductDto> getProducts(
@@ -53,9 +44,10 @@ public class ProductServiceImpl implements ProductService {
             int limit,
             String sort,
             String order,
-            String search
+            String search,
+            Long organizationId
     ) {
-        Specification<ProductEntity> spec = Specification.where(ProductSpecification.hasSearch(search));
+        Specification<ProductEntity> spec = ProductSpecification.hasSearchAndOrganization(search, organizationId);
 
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));

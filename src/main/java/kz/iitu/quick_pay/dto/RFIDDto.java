@@ -14,6 +14,6 @@ public class RFIDDto {
     @JsonProperty("rfid_tag")
     String rfidTag;
 
-    @JsonProperty("device_id")
-    String device_id;
+    @JsonProperty("cashbox_id")
+    String cashbox_id;
 }

@@ -16,5 +16,5 @@ public interface CashBoxService {
     List<CashBoxDto> getCashBoxesByOrganizationId(Long id);
     CashBoxDto getCashBoxById(Long id);
     CashBoxDto getCashBoxByCashBoxId(String id);
-    Page<CashBoxDto> getCashBoxes(int page, int limit, String sort, String order, String name, Boolean isActive);
+    Page<CashBoxDto> getCashBoxes(int page, int limit, String sort, String order, String name, Boolean is_active,Long organization_id);
 }

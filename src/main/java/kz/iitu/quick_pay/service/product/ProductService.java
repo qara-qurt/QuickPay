@@ -9,13 +9,13 @@ import java.util.Map;
 
 @Service
 public interface ProductService {
-    List<ProductDto> getProductsByOrganizationId(Long organizationId, int page, int size);
     Page<ProductDto> getProducts(
             int page,
             int limit,
             String sort,
             String order,
-            String search
+            String search,
+            Long organizationId
     );
     Long createProduct(ProductDto productDto);
     ProductDto updateProduct(Long id, Map<String,Object> updates);

@@ -2,16 +2,13 @@ package kz.iitu.quick_pay.service.cashbox;
 
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.CashBoxDto;
-import kz.iitu.quick_pay.dto.OrganizationDto;
 import kz.iitu.quick_pay.enitity.CashBoxEntity;
 import kz.iitu.quick_pay.enitity.OrganizationEntity;
 import kz.iitu.quick_pay.exception.cashbox.CashBoxAlreadyExistException;
 import kz.iitu.quick_pay.exception.cashbox.CashBoxNotFoundException;
 import kz.iitu.quick_pay.exception.organization.OrganizationNotFoundException;
-import kz.iitu.quick_pay.exception.product.ProductAlreadyExist;
 import kz.iitu.quick_pay.repository.CashBoxRepository;
 import kz.iitu.quick_pay.repository.OrganizationRepository;
-import kz.iitu.quick_pay.service.organization.OrganizationSpecification;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -119,15 +116,15 @@ public class CashBoxServiceImpl implements CashBoxService {
     }
 
     @Override
-    public Page<CashBoxDto> getCashBoxes(int page, int limit, String sort, String order, String name, Boolean isActive) {
+    public Page<CashBoxDto> getCashBoxes(int page, int limit, String sort, String order, String name, Boolean is_active, Long organization_id) {
         Specification<CashBoxEntity> spec = Specification
                 .where(CashBoxSpecification.hasName(name))
-                .and(CashBoxSpecification.isActive(isActive));
+                .and(CashBoxSpecification.isActive(is_active)
+                .and(CashBoxSpecification.hasOrganizationId(organization_id)));
 
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
 
         return cashBoxRepository.findAll(spec, pageable).map(CashBoxDto::convertTo);
-
     }
 }

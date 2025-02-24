@@ -26,17 +26,7 @@ public class ProductController {
 
     // Endpoints
     public static final String PRODUCT_BY_ID = "/{id}";
-    public static final String PRODUCT_BY_ORGANIZATION_ID= "/organization/{id}";
-
     ProductService productService;
-
-    @GetMapping(PRODUCT_BY_ORGANIZATION_ID)
-    public List<ProductDto> getProductsByOrganizationId(
-            @PathVariable Long id,
-            @RequestParam(value = "page",defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10")  int limit) {
-        return productService.getProductsByOrganizationId(id,page,limit);
-    }
 
     @GetMapping()
     public ResponseEntity<Map<String, Object>> getProducts(
@@ -44,9 +34,11 @@ public class ProductController {
             @RequestParam(value = "limit", defaultValue = "10") int limit,
             @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
             @RequestParam(value = "order", defaultValue = "desc") String order,
-            @RequestParam(value = "search", required = false) String search) {
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "organization_id", required = false) Long organization_id
+    ) {
 
-        Page<ProductDto> data = productService.getProducts(page, limit, sort, order, search);
+        Page<ProductDto> data = productService.getProducts(page, limit, sort, order, search, organization_id);
         return ResponseEntity.ok(Map.of("data", data));
     }
     @PostMapping()

@@ -45,7 +45,7 @@ public class ProductDto {
     public static ProductDto convertTo(ProductEntity entity) {
         return ProductDto.builder()
                 .id(entity.getId())
-                .organizationId(entity.getId())
+                .organizationId(entity.getOrganization().getId())
                 .name(entity.getName())
                 .price(entity.getPrice())
                 .sizes(entity.getSizes())

@@ -1,6 +1,7 @@
 package kz.iitu.quick_pay.service.product_rfid;
 
 import jakarta.transaction.Transactional;
+import kz.iitu.quick_pay.dto.ProductDto;
 import kz.iitu.quick_pay.dto.ProductRfidDto;
 import kz.iitu.quick_pay.enitity.ProductEntity;
 import kz.iitu.quick_pay.enitity.ProductRFIDEntity;
@@ -27,6 +28,12 @@ public class ProductRfidServiceImpl implements ProductRfidService {
     @Override
     public boolean checkRfidIsExist(String rfid) {
         return productRfidRepository.existsByRfidToken(rfid);
+    }
+
+    @Override
+    public ProductDto getProductByRfid(String rfid) {
+        ProductRFIDEntity productRFIDEntity = productRfidRepository.findByRfidToken(rfid);
+        return ProductDto.convertTo(productRFIDEntity.getProduct());
     }
 
     @Transactional
