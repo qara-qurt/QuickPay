@@ -15,7 +15,8 @@ public interface UserService extends UserDetailsService {
              int limit,
              String sort,
              String order,
-             String search
+             String search,
+             Long organization_id
      );
      UserDto getUserById(Long id);
      UserDto getByUsername(String username);

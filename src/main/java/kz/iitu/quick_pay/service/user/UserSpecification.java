@@ -5,8 +5,6 @@ import kz.iitu.quick_pay.enitity.OrganizationUsersEntity;
 import kz.iitu.quick_pay.enitity.UserEntity;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.Join;
-import kz.iitu.quick_pay.enitity.Role;
 
 public class UserSpecification {
     public static Specification<UserEntity> hasSearch(String search) {

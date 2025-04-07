@@ -20,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(InventoryController.BASE_URL)
-public class InventoryController {
+public class  InventoryController {
 
     // Base URL
     public static final String BASE_URL = "api/inventory";

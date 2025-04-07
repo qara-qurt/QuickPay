@@ -93,9 +93,11 @@ public class UserController {
             @RequestParam(value = "limit", defaultValue = "10") int limit,
             @RequestParam(value = "sort", defaultValue = "updatedAt") String sort,
             @RequestParam(value = "order", defaultValue = "desc") String order,
-            @RequestParam(value = "search", required = false) String search) {
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "organization_id", required = false) Long organization_id
+    ) {
 
-        Page<UserDto> data = userService.getUsers(page, limit, sort, order, search);
+        Page<UserDto> data = userService.getUsers(page, limit, sort, order, search, organization_id);
         return ResponseEntity.ok(Map.of("data", data));
     }
 

@@ -89,7 +89,8 @@ public class UserServiceImpl implements UserService {
             int limit,
             String sort,
             String order,
-            String search
+            String search,
+            Long organization_id
     ) {
         Specification<UserEntity> spec = Specification.where(UserSpecification.hasSearch(search));
 
@@ -105,6 +106,7 @@ public class UserServiceImpl implements UserService {
             return UserDto.convertTo(userEntity, organizationUser.get().getOrganization());
         });
     }
+
 
 
     @Transactional
