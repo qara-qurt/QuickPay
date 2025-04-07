@@ -11,6 +11,10 @@ import kz.iitu.quick_pay.repository.OrganizationRepository;
 import kz.iitu.quick_pay.repository.ProductRepository;
 import kz.iitu.quick_pay.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -56,4 +60,25 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setProducts(productLinks);
         return transactionRepository.save(transaction).getId();
     }
+
+    @Override
+    public List<TransactionDto> getByOrganizationId(Long organizationId, int page, int limit, String sort, String order) {
+        Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
+
+        return transactionRepository.findByOrganizationId(organizationId, pageable)
+                .stream()
+                .map(transaction -> TransactionDto.builder()
+                        .cashboxId(transaction.getCashBox().getCashBoxId())
+                        .organizationId(transaction.getOrganization().getId())
+                        .paymentMethod(transaction.getPaymentMethod())
+                        .totalAmount(transaction.getTotalAmount())
+                        .productIds(transaction.getProducts().stream()
+                                .map(p -> p.getProduct().getId())
+                                .toList())
+                        .build())
+                .toList();
+    }
+
+
 }
