@@ -1,5 +1,6 @@
 package kz.iitu.quick_pay.service.transaction;
 
+import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.CreateTransactionDto;
 import kz.iitu.quick_pay.dto.ProductDto;
@@ -68,18 +69,27 @@ public class TransactionServiceImpl implements TransactionService {
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
 
-        return transactionRepository.findByOrganizationIdAndCashBox_CashBoxId(organizationId, cashboxId, pageable)
-                .stream()
+        Page<TransactionEntity> transactions;
+
+        if (cashboxId == null || cashboxId.isBlank()) {
+            // Получить все транзакции организации
+            transactions = transactionRepository.findByOrganization_Id(organizationId, pageable);
+        } else {
+            // Получить транзакции по кассе
+            transactions = transactionRepository.findByOrganizationIdAndCashBox_CashBoxId(organizationId, cashboxId, pageable);
+        }
+
+        return transactions.stream()
                 .map(transaction -> TransactionDto.builder()
                         .cashboxId(transaction.getCashBox().getCashBoxId())
                         .organizationId(transaction.getOrganization().getId())
                         .paymentMethod(transaction.getPaymentMethod())
                         .totalAmount(transaction.getTotalAmount())
                         .products(transaction.getProducts().stream()
-                                .map(p -> {
-                                    return ProductDto.convertTo(p.getProduct());                                })
+                                .map(p -> ProductDto.convertTo(p.getProduct()))
                                 .toList())
                         .build())
                 .toList();
     }
+
 }

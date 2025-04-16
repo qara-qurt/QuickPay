@@ -32,7 +32,7 @@ public class TransactionController {
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order,
-            @RequestParam(value = "cashbox_id") String cashboxId
+            @RequestParam(value = "cashbox_id",required = false, defaultValue = "") String cashboxId
     ) {
         return ResponseEntity.ok(
                 transactionService.getByOrganizationId(organizationId, cashboxId, page, limit, sort, order)

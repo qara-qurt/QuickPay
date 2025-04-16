@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
-    Page<TransactionEntity> findByOrganizationId(Long organizationId, Pageable pageable);
+    Page<TransactionEntity> findByOrganization_Id(Long organizationId, Pageable pageable);
     Page<TransactionEntity> findByOrganizationIdAndCashBox_CashBoxId(Long organizationId, String cashBoxId, Pageable pageable);
 }
