@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: quick-pay-postgres
+    environment:
+      POSTGRES_DB: quick-pay
+      POSTGRES_USER: dias
+      POSTGRES_PASSWORD: qaraqurt
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dias"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: quick-pay-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/quick-pay
+      SPRING_DATASOURCE_USERNAME: dias
+      SPRING_DATASOURCE_PASSWORD: qaraqurt
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: BhUEAX5kmmBCeHzXyZ1234567890secureKey
+      JWT_EXPIRATION: 12h
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
