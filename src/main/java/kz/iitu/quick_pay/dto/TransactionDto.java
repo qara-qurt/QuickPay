@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class TransactionDto {
+    Long id;
+
     @NotBlank(message = "Cashbox ID is required")
     String cashboxId;
 

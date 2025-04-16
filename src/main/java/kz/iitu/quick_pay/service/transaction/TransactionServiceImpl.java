@@ -81,6 +81,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         return transactions.stream()
                 .map(transaction -> TransactionDto.builder()
+                        .id(transaction.getId())
                         .cashboxId(transaction.getCashBox().getCashBoxId())
                         .organizationId(transaction.getOrganization().getId())
                         .paymentMethod(transaction.getPaymentMethod())
