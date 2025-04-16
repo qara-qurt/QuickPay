@@ -86,6 +86,8 @@ public class TransactionServiceImpl implements TransactionService {
                         .organizationId(transaction.getOrganization().getId())
                         .paymentMethod(transaction.getPaymentMethod())
                         .totalAmount(transaction.getTotalAmount())
+                        .createdAt(transaction.getCreatedAt())
+                        .updatedAt(transaction.getUpdatedAt())
                         .products(transaction.getProducts().stream()
                                 .map(p -> ProductDto.convertTo(p.getProduct()))
                                 .toList())

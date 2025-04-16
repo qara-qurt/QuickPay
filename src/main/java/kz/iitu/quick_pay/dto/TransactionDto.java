@@ -1,8 +1,10 @@
 package kz.iitu.quick_pay.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -28,4 +30,9 @@ public class TransactionDto {
 
     @NotBlank(message = "Payment method is required")
     String paymentMethod;
+
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt;
+    @JsonProperty("updated_at")
+    private LocalDateTime updatedAt;
 }
