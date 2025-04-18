@@ -10,6 +10,9 @@ import java.util.List;
 @Setter
 @Builder
 public class OrganizationUsersDto {
+
     OrganizationDto organization;
     List<UserDto> users;
+
+
 }
