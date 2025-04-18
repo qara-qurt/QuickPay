@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 @Builder
 public class UserLoginDto {
+
     @NotBlank(message = "Username is required")
     @Size(min = 3, message = "Username must be at least 6 characters")
     private String username;
