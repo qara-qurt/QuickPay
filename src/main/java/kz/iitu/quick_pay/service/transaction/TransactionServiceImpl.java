@@ -3,6 +3,7 @@ package kz.iitu.quick_pay.service.transaction;
 import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
 import kz.iitu.quick_pay.dto.CreateTransactionDto;
+import kz.iitu.quick_pay.dto.PagedResponse;
 import kz.iitu.quick_pay.dto.ProductDto;
 import kz.iitu.quick_pay.dto.TransactionDto;
 import kz.iitu.quick_pay.enitity.*;
@@ -65,21 +66,19 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDto> getByOrganizationId(Long organizationId, String cashboxId, int page, int limit, String sort, String order) {
+    public PagedResponse<TransactionDto> getByOrganizationId(Long organizationId, String cashboxId, int page, int limit, String sort, String order) {
         Sort.Direction direction = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(direction, sort));
 
         Page<TransactionEntity> transactions;
 
         if (cashboxId == null || cashboxId.isBlank()) {
-            // Получить все транзакции организации
             transactions = transactionRepository.findByOrganization_Id(organizationId, pageable);
         } else {
-            // Получить транзакции по кассе
             transactions = transactionRepository.findByOrganizationIdAndCashBox_CashBoxId(organizationId, cashboxId, pageable);
         }
 
-        return transactions.stream()
+        List<TransactionDto> transactionDtos = transactions.stream()
                 .map(transaction -> TransactionDto.builder()
                         .id(transaction.getId())
                         .cashboxId(transaction.getCashBox().getCashBoxId())
@@ -93,6 +92,9 @@ public class TransactionServiceImpl implements TransactionService {
                                 .toList())
                         .build())
                 .toList();
+
+        return new PagedResponse<>(transactions.getTotalElements(), transactionDtos);
     }
+
 
 }

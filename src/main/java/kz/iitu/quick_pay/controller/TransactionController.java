@@ -1,6 +1,7 @@
 package kz.iitu.quick_pay.controller;
 
 import kz.iitu.quick_pay.dto.CreateTransactionDto;
+import kz.iitu.quick_pay.dto.PagedResponse;
 import kz.iitu.quick_pay.dto.TransactionDto;
 import kz.iitu.quick_pay.service.transaction.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,13 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionDto>> getTransactionsByOrganizationId(
+    public ResponseEntity<PagedResponse<TransactionDto>> getTransactionsByOrganizationId(
             @RequestParam("organization_id") Long organizationId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(defaultValue = "desc") String order,
-            @RequestParam(value = "cashbox_id",required = false, defaultValue = "") String cashboxId
+            @RequestParam(value = "cashbox_id", required = false, defaultValue = "") String cashboxId
     ) {
         return ResponseEntity.ok(
                 transactionService.getByOrganizationId(organizationId, cashboxId, page, limit, sort, order)
