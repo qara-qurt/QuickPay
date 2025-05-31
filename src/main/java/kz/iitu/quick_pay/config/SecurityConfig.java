@@ -54,6 +54,7 @@ public class SecurityConfig {
                         )
                         .permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/ws/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()
