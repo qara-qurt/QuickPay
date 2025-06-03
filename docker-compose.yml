@@ -1,9 +1,5 @@
 version: "3.8"
 
-networks:
-  quickpay-network:
-    driver: bridge
-
 services:
   postgres:
     image: postgres:latest
@@ -21,8 +17,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - quickpay-network
 
   app:
     build:
@@ -41,8 +35,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    networks:
-      - quickpay-network
 
   metabase:
     image: metabase/metabase
@@ -55,8 +47,6 @@ services:
       MB_DB_FILE: /metabase-data/metabase.db
     depends_on:
       - postgres
-    networks:
-      - quickpay-network
 
 volumes:
   postgres-data:
